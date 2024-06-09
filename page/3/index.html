@@ -167,6 +167,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2021/12/15/youtube-downloader/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/15/youtube-downloader/" class="post-title-link" itemprop="url">Ubuntu环境中使用YouTube下载器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-15 23:54:34" itemprop="dateCreated datePublished" datetime="2021-12-15T23:54:34+08:00">2021-12-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Wine/" itemprop="url" rel="index"><span itemprop="name">Wine</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/12/15/youtube-downloader/" class="post-meta-item leancloud_visitors" data-flag-title="Ubuntu环境中使用YouTube下载器" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>今天尝试了Ubuntu环境下的好几个YouTube下载器，诸如you-get/youtube-dl之类的，不是速度慢就是完全下不动，和Windows下的WinX YouTube Downloader完全没法比，看来还是离不开它啊。</p>
+<p>于是想到使用wine来运行WinX YouTube Downloader。安装过程非常顺利，装好后也能看到软件图标，但是启动之后会闪退。在命令行中直接用wine启动exe程序发现提示和GLX有关的错误。</p>
+<p><img src="/2021/12/15/youtube-downloader/error.png" alt="错误信息"></p>
+<p>上网搜索发现有一篇文章提到需要设置环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export MESA_GL_VERSION_OVERRIDE=4.5</span><br></pre></td></tr></table></figure>
+
+<p>照做之后再次启动程序成功，试着下载了一个视频，速度飞快。</p>
+<p>但是把环境变量放到用户配置文件之后，重新进系统的时候发现通过图标启动应用还是闪退，并且应用列表界面出现颤动，也无法相应鼠标滚轮了。于是尝试修改应用desktop文件，将环境变量加到命令行上，又发现desktop文件中的命令行本身有问题，索性将其修改为之前在命令行启动成功时使用的命令格式，执行成功。重启系统后通过图标启动应用成功，再次尝试下载文件，一切正常。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2021/12/12/FirstAegisub/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -404,7 +496,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
