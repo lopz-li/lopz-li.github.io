@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lopz-li.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="以为很轻松，结果是个大坑！！！ 以前帮同事编译过Linux环境下的rocketmq-client-cpp库，用源码自带的构建脚本非常顺利，过程中需要从github下载第三方依赖库的代码，速度会比较慢，但加上代理之后很快就能完成了，整个过程没有费什么工夫。 这次又要编一个Windows下的版本，因为也有Windows环境下的构建脚本，以为也会非常轻松，结果没想到跳了个大坑！ 所幸一波三折之后终于是成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows环境下编译rocketmq-client-cpp（Visual Studio 2017 Community）">
+<meta property="og:url" content="https://lopz-li.github.io/2021/12/25/rocketmq-client-cpp-build/index.html">
+<meta property="og:site_name" content="杂物放置处">
+<meta property="og:description" content="以为很轻松，结果是个大坑！！！ 以前帮同事编译过Linux环境下的rocketmq-client-cpp库，用源码自带的构建脚本非常顺利，过程中需要从github下载第三方依赖库的代码，速度会比较慢，但加上代理之后很快就能完成了，整个过程没有费什么工夫。 这次又要编一个Windows下的版本，因为也有Windows环境下的构建脚本，以为也会非常轻松，结果没想到跳了个大坑！ 所幸一波三折之后终于是成">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-25T05:32:55.000Z">
+<meta property="article:modified_time" content="2023-04-24T07:38:51.923Z">
+<meta property="article:author" content="Lopz">
+<meta property="article:tag" content="记录">
+<meta property="article:tag" content="rocketmq">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lopz-li.github.io/2021/12/25/rocketmq-client-cpp-build/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows环境下编译rocketmq-client-cpp（Visual Studio 2017 Community） | 杂物放置处</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?36d97c31954569d27c898616f2fca5db";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">杂物放置处</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Lopz's Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2021/12/25/rocketmq-client-cpp-build/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows环境下编译rocketmq-client-cpp（Visual Studio 2017 Community）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-25 13:32:55" itemprop="dateCreated datePublished" datetime="2021-12-25T13:32:55+08:00">2021-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-24 15:38:51" itemprop="dateModified" datetime="2023-04-24T15:38:51+08:00">2023-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rocketmq/" itemprop="url" rel="index"><span itemprop="name">rocketmq</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/12/25/rocketmq-client-cpp-build/" class="post-meta-item leancloud_visitors" data-flag-title="Windows环境下编译rocketmq-client-cpp（Visual Studio 2017 Community）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>以为很轻松，结果是个大坑！！！</p>
+<p>以前帮同事编译过Linux环境下的rocketmq-client-cpp库，用源码自带的构建脚本非常顺利，过程中需要从github下载第三方依赖库的代码，速度会比较慢，但加上代理之后很快就能完成了，整个过程没有费什么工夫。</p>
+<p>这次又要编一个Windows下的版本，因为也有Windows环境下的构建脚本，以为也会非常轻松，结果没想到跳了个大坑！</p>
+<p>所幸一波三折之后终于是成功了，功能还有待测试，这里记录一下编译过程。</p>
+<h2 id="依赖库下载"><a href="#依赖库下载" class="headerlink" title="依赖库下载"></a>依赖库下载</h2><p>官方readme列举了几个第三方依赖库</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/boost_1_58_0/zip/master">boost 1.58.0</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/jsoncpp-0.10.6/zip/master">jsoncpp 0.10.6</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/libevent-release-2.0.22/zip/master">libevent 2.0.22</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/zlib-1.2.3-src/zip/master">zlib 1.2.3</a></li>
+</ul>
+<p>其实还有一个没有列出的</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://downloads.datastax.com/cpp-driver/windows/dependencies/openssl/v1.0.2/openssl-1.0.2-win32-msvc100.zip">openssl 1.0.2</a></li>
+</ul>
+<p>以上依赖库可以自己下载源码之后，解压到rocketmq-client-cpp目录下的thirdparty目录下（没有可以自行新建），保留原始目录名（需要删去结尾的-master后缀）以省去一些麻烦。自动构建脚本也有通过github直接clone，但没代理的话速度比较慢。</p>
+<h2 id="构建环境"><a href="#构建环境" class="headerlink" title="构建环境"></a>构建环境</h2><p>构建脚本是基于Visual Studio 2015编写的，我的环境是Visual Studio 2017 Community，需要额外安装一下Visual Studio 2015的支持。</p>
+<p>需要注意的是安装好Visual Studio 2015后生成的命令行提示符环境内路径设置有问题，不能执行devenv程序，需要从Visual Studio 2017命令行提示符进入之后，再执行Visual Studio 2015的环境变量设置脚本设置编译环境</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">%ProgramFiles(x86)%</span>\Microsoft Visual Studio <span class="number">14</span>.<span class="number">0</span>\Common7\Tools\vsvars32.bat</span><br></pre></td></tr></table></figure>
+
+<h2 id="依赖库构建"><a href="#依赖库构建" class="headerlink" title="依赖库构建"></a>依赖库构建</h2><h3 id="boost"><a href="#boost" class="headerlink" title="boost"></a>boost</h3><p>编译boost可参考自动构建脚本中的步骤进行，需要注意的是自动构建脚本编译时没有加入zlib支持，后续编译rocketmq-client-cpp时会报错，此处需要自行添加zlib支持。</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/boost_1_58_0</span><br><span class="line">bjam.exe address-model=<span class="number">32</span> --with-serialization --with-atomic --with-log --with-locale --with-iostreams --with-system --with-regex --with-thread --with-date_time --with-chrono --with-filesystem -sZLIB_SOURCE=\<span class="built_in">path</span>-to-zlib-source -SZLIB_INCLUDE=\<span class="built_in">path</span>-to-zlib-source link=static  threading=multi variant=release runtime-link=shared</span><br></pre></td></tr></table></figure>
+
+<p>其中-sZLIB_SOURCE=\path-to-zlib-source指定zlib源文件路径，-SZLIB_INCLUDE=\path-to-zlib-source指定zlib头文件路径，均设置为解压后的zlib库根路径即可，路径分隔符采用windows下的\，设置为绝对路径可以避免一些不必要的麻烦</p>
+<h3 id="jsoncpp"><a href="#jsoncpp" class="headerlink" title="jsoncpp"></a>jsoncpp</h3><p>编译jsoncpp比较简单，参考自动构建脚本即可</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/jsoncpp-<span class="number">0</span>.<span class="number">10</span>.<span class="number">6</span></span><br><span class="line">devenv ./jsoncpp_lib_static.vcxproj  /Rebuild &quot;Release|x86&quot; /out log.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="libevent"><a href="#libevent" class="headerlink" title="libevent"></a>libevent</h3><p>编译libevent可参考自动构建脚本，需要注意的是libevent源码中的Visual Studio工程文件没有添加openssl支持，需要手工添加bufferevent_openssl.c源文件，并在工程配置中添加_EVENT_HAVE_OPENSSL宏定义以及openssl头文件路径</p>
+<p>另外编译过程中可能会出现找不到Winsock2.h等头文件的错误，需要手工添加头文件路径，根据机器环境头文件目录各不相同。我的是C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared和C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um这两个</p>
+<p>工程文件准备好之后即可进行构建</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/libevent-release-<span class="number">2</span>.<span class="number">0</span>.<span class="number">22</span></span><br><span class="line">devenv ./libevent.vcxproj  /Rebuild &quot;Release|x86&quot; /out log.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="构建rocketmq-client-cpp"><a href="#构建rocketmq-client-cpp" class="headerlink" title="构建rocketmq-client-cpp"></a>构建rocketmq-client-cpp</h2><p>rocketmq-client-cpp的Visual Studio项目文件问题很多，编译中会出现很多错误，以下记录了对工程文件的一些修改</p>
+<ol>
+<li>项目属性中的默认平台工具集会导致编译不过，需要修改为Visual Studio 2015</li>
+<li>可能出现找不到Winsock2.h等头文件的提示，需要手工添加头文件路径，例如我的就是C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared和C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um这两个</li>
+<li>会报找不到MQClient.cpp这个文件，项目中并没有这个文件，从工程中删除这个文件记录即可</li>
+<li>编译中会出现很多看起来和socket及网络相关的宏、结构体的重定义报错，需要修改src/transport/SocketUtil.h和include/MQMessageExt.h两个包含了Winsock2.h和Windows.h头文件的源文件，将包含Winsock2.h的行放到Windows.h之前</li>
+<li>编译中会出现找不到一些库自身的以及依赖库的头文件，原因是没有添加到头文件搜索路径中，需要手工添加，主要有src/trace、src/include、openssl库头文件目录</li>
+<li>编译中部分源文件会报boost::weak_ptr未定义错误，原因是没有包含对应头文件，需要手工修改源文件，增加#include &lt;boost/weak_ptr.hpp&gt;项</li>
+<li>StringIdMaker.cpp会报找不到重载函数的错误，原因是函数定义和函数头文件声明的签名不同，将函数定义处的签名改成和头文件一致即可</li>
+<li>TcpTransport.cpp会报无法从void<em>转换到const char</em>的错误，将源文件中的void修改为char即可</li>
+<li>TraceContant.h会报意外的标号错误，原因是静态变量名被定义了同名宏，需要手工取消宏定义</li>
+<li>EventLoop.cpp会报找不到bufferevent_openssl_socket_new符号的错误，原因是没有包含对应头文件，需要手工修改源文件，添加#include &lt;event2/bufferevent_ssl.h&gt;项</li>
+<li>链接过程中会报很多无法解析外部符号错误，原因有两种，一部分找不到的符号是因为没有引用依赖库文件，需要在工程设置中手工添加依赖库文件引用以及库文件搜索路径；另一部分找不到的符号是因为rocketmq-client-cpp的工程文件有错误，没有添加一些源文件，根据错误信息中的类名等可搜索同名源文件所在位置，添加到工程中之后再次构建即可</li>
+</ol>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>玩C/C++也有很多年了，它的构建系统确实是比其他语言麻烦点，但如果是我自己的工程，可能不能说拿到哪都直接能用，却也不至于到像rocketmq-client-cpp这种完全没法用的程度。</p>
+<p>原以为既然是阿里这种大公司的开源项目，肯定都是年薪百万的程序员搞出来的，应该非常方便好用，折腾了这一遭看来也不过如此啊！</p>
+<p>但是回想一下，在Linux环境下确实还是很顺利的，莫不是阿里对Windows已经放弃治疗了？</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%B0%E5%BD%95/" rel="tag"># 记录</a>
+              <a href="/tags/rocketmq/" rel="tag"># rocketmq</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/17/desktop-panic/" rel="prev" title="Ubuntu桌面起不来了">
+      <i class="fa fa-chevron-left"></i> Ubuntu桌面起不来了
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/18/Ski-Resort-of-Hubei/" rel="next" title="滑雪日记之湖北省内滑雪场印象">
+      滑雪日记之湖北省内滑雪场印象 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%BA%93%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">依赖库下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%8E%AF%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text">构建环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%BA%93%E6%9E%84%E5%BB%BA"><span class="nav-number">3.</span> <span class="nav-text">依赖库构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boost"><span class="nav-number">3.1.</span> <span class="nav-text">boost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jsoncpp"><span class="nav-number">3.2.</span> <span class="nav-text">jsoncpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#libevent"><span class="nav-number">3.3.</span> <span class="nav-text">libevent</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BArocketmq-client-cpp"><span class="nav-number">4.</span> <span class="nav-text">构建rocketmq-client-cpp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%84%9F%E6%83%B3"><span class="nav-number">5.</span> <span class="nav-text">感想</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lopz"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Lopz</p>
+  <div class="site-description" itemprop="description">想起来时的一些随笔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lopz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?36d97c31954569d27c898616f2fca5db";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"gCM20jjBTculhUmR7WrfRqOM-gzGzoHsz","app_key":"RXNdML8SdqDOIqo6kGwAcmrw","server_url":null,"security":true};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
