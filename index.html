@@ -167,6 +167,146 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2024/08/19/virtualbox-win-startup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/19/virtualbox-win-startup/" class="post-title-link" itemprop="url">Windows系统下开机启动VirtualBox虚拟机</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-19 13:29:58 / 修改时间：14:54:01" itemprop="dateCreated datePublished" datetime="2024-08-19T13:29:58+08:00">2024-08-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%99%9A%E6%8B%9F%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">虚拟机</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在Windows系统下让VirtualBox虚拟机开机启动的一些方法</p>
+<p>Windows系统下VirtualBox虚拟机开机启动的设置不像VMWare虚拟机那么方便，找到了两种设置开机启动的方法，在此记录一下。</p>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/virtualization/virtualbox/6.0/admin/autostart.html">Starting Virtual Machines During System Boot</a><br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/19017825/how-to-run-oracle-virtualbox-vbox-like-a-service-after-boot-in-fully-backgro/67305645#67305645">How to run “Oracle VirtualBox (VBOX)” like a service after boot in fully background “Microsoft Windows (WIN)”</a></p>
+<h2 id="方法1：添加开机启动服务"><a href="#方法1：添加开机启动服务" class="headerlink" title="方法1：添加开机启动服务"></a>方法1：添加开机启动服务</h2><p>VirtualBox安装目录下提供了开机启动服务管理程序，使用前首先需要设置VBOXAUTOSTART_CONFIG环境变量，将其指向开机启动配置文件所在目录，配置文件示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Default policy is to deny starting a VM, the other option is &quot;allow&quot;.</span><br><span class="line">default_policy = deny</span><br><span class="line"></span><br><span class="line"># lopz is allowed to start virtual machines but starting them</span><br><span class="line"># will be delayed for 10 seconds</span><br><span class="line">lopz = &#123;</span><br><span class="line">    allow = true</span><br><span class="line">    startup_delay = 10</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后需要准备一个保存了用户密码的文件，文件内以明文存储用于启动虚拟机的用户账户的密码，后面紧跟一个换行符。</p>
+<p>以上准备就绪后以管理员权限执行以下命令添加虚拟机开机启动服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxAutostartSvc install --user=&lt;用户名&gt; [--password-file=&lt;密码文件&gt;]</span><br></pre></td></tr></table></figure>
+
+<p>注意，如果不指定密码文件，系统会要求输入该用户的密码，另外无密码的用户无法添加开机启动服务。</p>
+<p>想要删除虚拟机开机启动服务，可以以管理员权限执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxAutostartSvc delete --user=&lt;用户名&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>开机启动服务的缺点：</strong></p>
+<p>使用开机启动服务启动的虚拟机无法用虚拟机管理器管理，所以无法控制其开关机以及观察运行状态等。</p>
+<h2 id="方法2：添加计划任务"><a href="#方法2：添加计划任务" class="headerlink" title="方法2：添加计划任务"></a>方法2：添加计划任务</h2><p>使用计划任务也可以实现开机不登录启动虚拟机，以下以Win7系统为例：</p>
+<ol>
+<li>在计划任务程序中添加一个“自定义”文件夹</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/1.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/2.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/3.png" alt=" "></p>
+<ol start="2">
+<li>在“自定义”文件夹下新建一个任务</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/4.png" alt=" "></p>
+<ol start="3">
+<li>在“常规”选项卡中输入名称、描述等，安全选项按下图设置</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/5.png" alt=" "></p>
+<ol start="4">
+<li>在“触发器”选项卡中新建一个触发器，开始任务设为“启动时”，同时勾选“启用”</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/6.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/7.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/8.png" alt=" "></p>
+<ol start="5">
+<li>在“操作”选项卡中新建一个操作，操作选“启动程序”，“程序或脚本”项浏览选择VirtualBox安装目录下的VBoxManage.exe</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/9.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/10.png" alt=" "></p>
+<p><img src="/2024/08/19/virtualbox-win-startup/11.png" alt=" "></p>
+<p>将”程序或脚本”项中除文件名外的整个目录部分复制后粘贴到”起始于”项中</p>
+<p><img src="/2024/08/19/virtualbox-win-startup/12.png" alt=" "></p>
+<p>打开虚拟机管理器，记下需要开启的虚拟机名称</p>
+<p><img src="/2024/08/19/virtualbox-win-startup/13.png" alt=" "></p>
+<p>在“添加参数”项中填入以下内容，其中的“虚拟机名称”替换为刚才记下的虚拟机名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">startvm &quot;虚拟机名称&quot; --type headless</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/08/19/virtualbox-win-startup/14.png" alt=" "></p>
+<p>点“确定”完成添加</p>
+<p><img src="/2024/08/19/virtualbox-win-startup/15.png" alt=" "></p>
+<ol start="6">
+<li>“条件”选项卡按下图设置</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/16.png" alt=" "></p>
+<ol start="7">
+<li>“设置”选项卡按下图设置</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/17.png" alt=" "></p>
+<ol start="8">
+<li>点“确定”完成任务添加</li>
+</ol>
+<p><img src="/2024/08/19/virtualbox-win-startup/18.png" alt=" "></p>
+<ol start="9">
+<li>重启系统验证计划任务是否正常执行</li>
+</ol>
+<p><strong>通过计划任务启动的虚拟机仍然可以通过虚拟机管理器管理</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2024/07/31/rockpis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -943,88 +1083,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/08/25/tesla-hainan/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Lopz">
-      <meta itemprop="description" content="想起来时的一些随笔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杂物放置处">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/08/25/tesla-hainan/" class="post-title-link" itemprop="url">特斯拉Model 3海南半环岛</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-08-25 11:50:38" itemprop="dateCreated datePublished" datetime="2022-08-25T11:50:38+08:00">2022-08-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%89%B9%E6%96%AF%E6%8B%89/" itemprop="url" rel="index"><span itemprop="name">特斯拉</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>八月初是老婆生日，所以7月末我们来到了海南，租了一辆2022款特斯拉Model 3准备东线自驾…</p>
-<p>整个行程7天，计划是从海口开到三亚，一路开一路玩过去，不赶路，所以续航什么的显得不是很重要。行程期间海南天气很好，太阳非常大，2022款的热泵空调感觉很给力，车子开动的时候温度稍微调低一点都会觉得冷。就是停车充电的时候可能是散热压力比较大，空调的效果就不是那么好。</p>
-<p>这次的路线有很多非高速的省道、乡道之类的路，需要手动驾驶，要长时间保持油门深度，时间长了以后感觉腰会有点疼，可能是右腿长时间用力的原因。</p>
-<p>快返程时三亚出现了疫情，经过各种辗转折腾终于可以开车离开，到海口赶飞机，时间比较紧，所以全程处于赶路的状态。这里要提一下特斯拉的车机导航，出发的时候用的车机导航，但在海棠湾上高速的时候发现出三亚方向的匝道已经封闭了，跟着导航转了两个匝道口都一样。于是果断改用手机高德导航，跟着走了一段省道在下一个开放的路口上了高速，所以很多人还是要用手机导航也是有原因的。整个返程几乎全程高速，大约240公里路程，车是满电（表显439）出发的。快到海口的时候瞟了一眼，开了210公里，表显还剩200多一点，这感觉和之前租的20款明显就不一样了，心里一点都不慌，22款的区别还是挺大的。另外22款的加速是6.1秒，实际加速感受确实比20款的5.6秒要差一点，但超车的信心还是非常足的。</p>
-<p>这次体验的时间算是比较长了，对特斯拉油门硬的印象也进一步加深了…</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1096,20 +1154,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
