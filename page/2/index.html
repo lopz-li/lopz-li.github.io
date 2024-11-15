@@ -167,6 +167,112 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/10/13/clash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/13/clash/" class="post-title-link" itemprop="url">Linux下设置clash代理上网</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-13 13:31:29" itemprop="dateCreated datePublished" datetime="2022-10-13T13:31:29+08:00">2022-10-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/clash/" itemprop="url" rel="index"><span itemprop="name">clash</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BB%A3%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">代理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>参考文章：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/pikpiksec/p/16078650.html">https://www.cnblogs.com/pikpiksec/p/16078650.html</a></p>
+<h2 id="软件下载"><a href="#软件下载" class="headerlink" title="软件下载"></a>软件下载</h2><p>github地址：<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash">https://github.com/Dreamacro/clash</a></p>
+<p>下载好之后记得chmod添加执行权限</p>
+<p>然后下载配置信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.config/clash/ &amp;&amp; cd ~/.config/clash/ </span><br><span class="line">sudo wget -O config.yaml [订阅链接]</span><br><span class="line">sudo wget -O Country.mmdb https://www.sub-speeder.com/client-download/Country.mmdb</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件config.yaml中clash的外部控制设置（external-controller）地址为：0.0.0.0:9990，使内外网都可以访问</p>
+<h2 id="系统代理设置"><a href="#系统代理设置" class="headerlink" title="系统代理设置"></a>系统代理设置</h2><p>设置/etc/environment和用户环境bashrc中的http_proxy，https_proxy，no_proxy选项</p>
+<p>设置sudo，文件尾加入Defaults env_keep+=”http_proxy https_proxy no_proxy”</p>
+<p>不走系统代理的程序单独设置，如git config –global http.proxy ‘<a href="http://127.0.0.1:7890&#39;">http://127.0.0.1:7890&#39;</a></p>
+<h2 id="UI设置"><a href="#UI设置" class="headerlink" title="UI设置"></a>UI设置</h2><p>在自己喜欢的目录下载UI文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Dreamacro/clash-dashboard.git</span><br><span class="line">cd clash-dashboard</span><br><span class="line">git checkout -b gh-pages origin/gh-pages</span><br><span class="line">pwd # 显示当前路径</span><br></pre></td></tr></table></figure>
+
+<p>在~/.config/clash/config.yaml中设置UI地址(external-ui，指向clash-dashboard目录)和访问密码(secret)</p>
+<h2 id="添加系统服务"><a href="#添加系统服务" class="headerlink" title="添加系统服务"></a>添加系统服务</h2><p>将配置文件转移到/etc中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv ~/.config/clash /etc</span><br></pre></td></tr></table></figure>
+
+<p>添加启动信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/systemd/system/clash.service</span><br></pre></td></tr></table></figure>
+
+<p>输入以下内容，-d参数指定配置文件路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=clash daemon</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=root</span><br><span class="line">ExecStart=/opt/clash/clash -d /etc/clash/</span><br><span class="line">Restart=on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>重新加载systemctl daemon</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动Clash</span></span><br><span class="line">sudo systemctl start clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置Clash开机自启动</span></span><br><span class="line">sudo systemctl enable clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启Clash命令</span></span><br><span class="line">sudo systemctl restart clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看Clash运行状态</span></span><br><span class="line">sudo systemctl status clash.service</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/08/25/tesla-hainan/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1015,132 +1121,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2021/12/25/rocketmq-client-cpp-build/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Lopz">
-      <meta itemprop="description" content="想起来时的一些随笔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杂物放置处">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/25/rocketmq-client-cpp-build/" class="post-title-link" itemprop="url">Windows环境下编译rocketmq-client-cpp（Visual Studio 2017 Community）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-12-25 13:32:55" itemprop="dateCreated datePublished" datetime="2021-12-25T13:32:55+08:00">2021-12-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-24 15:38:51" itemprop="dateModified" datetime="2023-04-24T15:38:51+08:00">2023-04-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rocketmq/" itemprop="url" rel="index"><span itemprop="name">rocketmq</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>以为很轻松，结果是个大坑！！！</p>
-<p>以前帮同事编译过Linux环境下的rocketmq-client-cpp库，用源码自带的构建脚本非常顺利，过程中需要从github下载第三方依赖库的代码，速度会比较慢，但加上代理之后很快就能完成了，整个过程没有费什么工夫。</p>
-<p>这次又要编一个Windows下的版本，因为也有Windows环境下的构建脚本，以为也会非常轻松，结果没想到跳了个大坑！</p>
-<p>所幸一波三折之后终于是成功了，功能还有待测试，这里记录一下编译过程。</p>
-<h2 id="依赖库下载"><a href="#依赖库下载" class="headerlink" title="依赖库下载"></a>依赖库下载</h2><p>官方readme列举了几个第三方依赖库</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/boost_1_58_0/zip/master">boost 1.58.0</a></li>
-<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/jsoncpp-0.10.6/zip/master">jsoncpp 0.10.6</a></li>
-<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/libevent-release-2.0.22/zip/master">libevent 2.0.22</a></li>
-<li><a target="_blank" rel="noopener" href="https://codeload.github.com/jsj020122/zlib-1.2.3-src/zip/master">zlib 1.2.3</a></li>
-</ul>
-<p>其实还有一个没有列出的</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://downloads.datastax.com/cpp-driver/windows/dependencies/openssl/v1.0.2/openssl-1.0.2-win32-msvc100.zip">openssl 1.0.2</a></li>
-</ul>
-<p>以上依赖库可以自己下载源码之后，解压到rocketmq-client-cpp目录下的thirdparty目录下（没有可以自行新建），保留原始目录名（需要删去结尾的-master后缀）以省去一些麻烦。自动构建脚本也有通过github直接clone，但没代理的话速度比较慢。</p>
-<h2 id="构建环境"><a href="#构建环境" class="headerlink" title="构建环境"></a>构建环境</h2><p>构建脚本是基于Visual Studio 2015编写的，我的环境是Visual Studio 2017 Community，需要额外安装一下Visual Studio 2015的支持。</p>
-<p>需要注意的是安装好Visual Studio 2015后生成的命令行提示符环境内路径设置有问题，不能执行devenv程序，需要从Visual Studio 2017命令行提示符进入之后，再执行Visual Studio 2015的环境变量设置脚本设置编译环境</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">%ProgramFiles(x86)%</span>\Microsoft Visual Studio <span class="number">14</span>.<span class="number">0</span>\Common7\Tools\vsvars32.bat</span><br></pre></td></tr></table></figure>
-
-<h2 id="依赖库构建"><a href="#依赖库构建" class="headerlink" title="依赖库构建"></a>依赖库构建</h2><h3 id="boost"><a href="#boost" class="headerlink" title="boost"></a>boost</h3><p>编译boost可参考自动构建脚本中的步骤进行，需要注意的是自动构建脚本编译时没有加入zlib支持，后续编译rocketmq-client-cpp时会报错，此处需要自行添加zlib支持。</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/boost_1_58_0</span><br><span class="line">bjam.exe address-model=<span class="number">32</span> --with-serialization --with-atomic --with-log --with-locale --with-iostreams --with-system --with-regex --with-thread --with-date_time --with-chrono --with-filesystem -sZLIB_SOURCE=\<span class="built_in">path</span>-to-zlib-source -SZLIB_INCLUDE=\<span class="built_in">path</span>-to-zlib-source link=static  threading=multi variant=release runtime-link=shared</span><br></pre></td></tr></table></figure>
-
-<p>其中-sZLIB_SOURCE=\path-to-zlib-source指定zlib源文件路径，-SZLIB_INCLUDE=\path-to-zlib-source指定zlib头文件路径，均设置为解压后的zlib库根路径即可，路径分隔符采用windows下的\，设置为绝对路径可以避免一些不必要的麻烦</p>
-<h3 id="jsoncpp"><a href="#jsoncpp" class="headerlink" title="jsoncpp"></a>jsoncpp</h3><p>编译jsoncpp比较简单，参考自动构建脚本即可</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/jsoncpp-<span class="number">0</span>.<span class="number">10</span>.<span class="number">6</span></span><br><span class="line">devenv ./jsoncpp_lib_static.vcxproj  /Rebuild &quot;Release|x86&quot; /out log.txt</span><br></pre></td></tr></table></figure>
-
-<h3 id="libevent"><a href="#libevent" class="headerlink" title="libevent"></a>libevent</h3><p>编译libevent可参考自动构建脚本，需要注意的是libevent源码中的Visual Studio工程文件没有添加openssl支持，需要手工添加bufferevent_openssl.c源文件，并在工程配置中添加_EVENT_HAVE_OPENSSL宏定义以及openssl头文件路径</p>
-<p>另外编译过程中可能会出现找不到Winsock2.h等头文件的错误，需要手工添加头文件路径，根据机器环境头文件目录各不相同。我的是C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared和C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um这两个</p>
-<p>工程文件准备好之后即可进行构建</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thirdparty/libevent-release-<span class="number">2</span>.<span class="number">0</span>.<span class="number">22</span></span><br><span class="line">devenv ./libevent.vcxproj  /Rebuild &quot;Release|x86&quot; /out log.txt</span><br></pre></td></tr></table></figure>
-
-<h2 id="构建rocketmq-client-cpp"><a href="#构建rocketmq-client-cpp" class="headerlink" title="构建rocketmq-client-cpp"></a>构建rocketmq-client-cpp</h2><p>rocketmq-client-cpp的Visual Studio项目文件问题很多，编译中会出现很多错误，以下记录了对工程文件的一些修改</p>
-<ol>
-<li>项目属性中的默认平台工具集会导致编译不过，需要修改为Visual Studio 2015</li>
-<li>可能出现找不到Winsock2.h等头文件的提示，需要手工添加头文件路径，例如我的就是C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared和C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um这两个</li>
-<li>会报找不到MQClient.cpp这个文件，项目中并没有这个文件，从工程中删除这个文件记录即可</li>
-<li>编译中会出现很多看起来和socket及网络相关的宏、结构体的重定义报错，需要修改src/transport/SocketUtil.h和include/MQMessageExt.h两个包含了Winsock2.h和Windows.h头文件的源文件，将包含Winsock2.h的行放到Windows.h之前</li>
-<li>编译中会出现找不到一些库自身的以及依赖库的头文件，原因是没有添加到头文件搜索路径中，需要手工添加，主要有src/trace、src/include、openssl库头文件目录</li>
-<li>编译中部分源文件会报boost::weak_ptr未定义错误，原因是没有包含对应头文件，需要手工修改源文件，增加#include &lt;boost/weak_ptr.hpp&gt;项</li>
-<li>StringIdMaker.cpp会报找不到重载函数的错误，原因是函数定义和函数头文件声明的签名不同，将函数定义处的签名改成和头文件一致即可</li>
-<li>TcpTransport.cpp会报无法从void<em>转换到const char</em>的错误，将源文件中的void修改为char即可</li>
-<li>TraceContant.h会报意外的标号错误，原因是静态变量名被定义了同名宏，需要手工取消宏定义</li>
-<li>EventLoop.cpp会报找不到bufferevent_openssl_socket_new符号的错误，原因是没有包含对应头文件，需要手工修改源文件，添加#include &lt;event2/bufferevent_ssl.h&gt;项</li>
-<li>链接过程中会报很多无法解析外部符号错误，原因有两种，一部分找不到的符号是因为没有引用依赖库文件，需要在工程设置中手工添加依赖库文件引用以及库文件搜索路径；另一部分找不到的符号是因为rocketmq-client-cpp的工程文件有错误，没有添加一些源文件，根据错误信息中的类名等可搜索同名源文件所在位置，添加到工程中之后再次构建即可</li>
-</ol>
-<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>玩C/C++也有很多年了，它的构建系统确实是比其他语言麻烦点，但如果是我自己的工程，可能不能说拿到哪都直接能用，却也不至于到像rocketmq-client-cpp这种完全没法用的程度。</p>
-<p>原以为既然是阿里这种大公司的开源项目，肯定都是年薪百万的程序员搞出来的，应该非常方便好用，折腾了这一遭看来也不过如此啊！</p>
-<p>但是回想一下，在Linux环境下确实还是很顺利的，莫不是阿里对Windows已经放弃治疗了？</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1212,20 +1192,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -167,6 +167,103 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2024/11/15/armbian-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/15/armbian-install/" class="post-title-link" itemprop="url">给魔百盒CM311-1s YST安装armbian系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-15 11:53:43 / 修改时间：13:09:27" itemprop="dateCreated datePublished" datetime="2024-11-15T11:53:43+08:00">2024-11-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/armbian/" itemprop="url" rel="index"><span itemprop="name">armbian</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前买的二手刷机电视盒子太卡了，于是刷了个armbian当服务器用，在此记录一下过程。</p>
+<p>盒子是中国移动魔百盒，型号CM311-1s YST，网上能找到很多CM311-1a YST的资源，但1a和1s的SoC型号不一样，不能完全照搬，需要找对应的正确固件。</p>
+<p>研究了一下，确定刷机过程应为：线刷安卓固件 -&gt; 烧录armbian系统U盘 -&gt; 用开心电视助手控制盒子从U盘启动 -&gt; 在U盘系统环境下安装armbian到EMMC</p>
+<p>需要准备的材料：</p>
+<ol>
+<li>amlogic芯片USB刷机工具：可搜索Amlogic USB Burning Tool，下载一个较新的版本即可</li>
+<li>双头USB-A数据线：可购买或自制（直连线两头线序相同）</li>
+<li>镊子：金属导电镊子，用于短接进入刷机模式</li>
+<li>安卓线刷固件：适用CM311-1s YST型号的安卓线刷包</li>
+<li>U盘：容量须大于解压后的armbian固件大小</li>
+<li>U盘烧录工具：可用rufus、balenaEtcher等</li>
+<li>armbian固件：可到<a target="_blank" rel="noopener" href="https://github.com/ophub/amlogic-s9xxx-armbian">https://github.com/ophub/amlogic-s9xxx-armbian</a>下载需要的Release版本</li>
+<li>开心电视助手：可搜索开心电视助手，下载较新的版本</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1G_-fCwHh8DGjbQ4HauYw8g?pwd=m9ij">部分固件及刷机工具网盘链接</a></p>
+<p>下载好安卓线刷固件后解压得到后缀img的固件文件，打开Amlogic USB Burning Tool刷机工具，在文件菜单中导入img固件。</p>
+<p>拆出盒子主板，双头USB-A线一头插到盒子上离网口较近的USB口，先用镊子短接板子背面4R12电阻，再将线的另一头插入电脑，刷机工具上应该能看到显示板子连接成功，此时即可拿开镊子。<br>（我的这个盒子插上数据线后就通电连接上了，不需要另外接电源，别的盒子可能要先通电之后再插数据线）</p>
+<p><img src="/2024/11/15/armbian-install/4R12.jpg" alt="4R12电阻"></p>
+<p>板子连接上之后即可开始刷新固件，刷新完成后会有提示，点停止后断开数据线，然后重启盒子进入安卓系统。</p>
+<p>下载好armbian系统固件，通过U盘烧录工具（可用rufus、balenaEtcher等）烧录到U盘上。</p>
+<p>进入安卓后可以在盒子网络设置界面或者在路由器设置界面上得到盒子的IP，打开开心电视助手，以默认端口5555连接盒子IP。</p>
+<p>开心电视助手连接盒子成功后，在调试选项卡界面中的amlogic类别里选择从U盘/SD卡启动，等盒子重启后迅速插入系统U盘（此举是为了避免安卓系统修改U盘文件权限），让盒子从U盘启动armbian系统。</p>
+<p>盒子从U盘启动armbian系统后，可以在路由器设置界面上看到armbian名字的IP，可用终端工具ssh登录，用户名root，密码1234，根据提示进行系统初始设置。</p>
+<p>执行armbian-install命令将armbian系统安装到EMMC，设备序号选122，安装完成后重启盒子。</p>
+<p>如果安装系统到EMMC后出现根目录下部分目录的用户/组显示1023，说明被安卓系统修改了U盘文件的权限，此时可以使用U盘烧录工具重新烧录一次armbian固件，然后插上U盘，盒子会自动从U盘启动，重新安装系统到EMMC即可。</p>
+<p>注意：CM311-1s YST型号的盒子安装armbian之后HDMI是没有输出的，只能通过远程登录进行操作，IP可在路由器设置界面上获得。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2024/08/19/virtualbox-win-startup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -977,112 +1074,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/10/13/clash/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Lopz">
-      <meta itemprop="description" content="想起来时的一些随笔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杂物放置处">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/10/13/clash/" class="post-title-link" itemprop="url">Linux下设置clash代理上网</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-10-13 13:31:29" itemprop="dateCreated datePublished" datetime="2022-10-13T13:31:29+08:00">2022-10-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/clash/" itemprop="url" rel="index"><span itemprop="name">clash</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BB%A3%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">代理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>参考文章：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/pikpiksec/p/16078650.html">https://www.cnblogs.com/pikpiksec/p/16078650.html</a></p>
-<h2 id="软件下载"><a href="#软件下载" class="headerlink" title="软件下载"></a>软件下载</h2><p>github地址：<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash">https://github.com/Dreamacro/clash</a></p>
-<p>下载好之后记得chmod添加执行权限</p>
-<p>然后下载配置信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.config/clash/ &amp;&amp; cd ~/.config/clash/ </span><br><span class="line">sudo wget -O config.yaml [订阅链接]</span><br><span class="line">sudo wget -O Country.mmdb https://www.sub-speeder.com/client-download/Country.mmdb</span><br></pre></td></tr></table></figure>
-
-<p>修改配置文件config.yaml中clash的外部控制设置（external-controller）地址为：0.0.0.0:9990，使内外网都可以访问</p>
-<h2 id="系统代理设置"><a href="#系统代理设置" class="headerlink" title="系统代理设置"></a>系统代理设置</h2><p>设置/etc/environment和用户环境bashrc中的http_proxy，https_proxy，no_proxy选项</p>
-<p>设置sudo，文件尾加入Defaults env_keep+=”http_proxy https_proxy no_proxy”</p>
-<p>不走系统代理的程序单独设置，如git config –global http.proxy ‘<a href="http://127.0.0.1:7890&#39;">http://127.0.0.1:7890&#39;</a></p>
-<h2 id="UI设置"><a href="#UI设置" class="headerlink" title="UI设置"></a>UI设置</h2><p>在自己喜欢的目录下载UI文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Dreamacro/clash-dashboard.git</span><br><span class="line">cd clash-dashboard</span><br><span class="line">git checkout -b gh-pages origin/gh-pages</span><br><span class="line">pwd # 显示当前路径</span><br></pre></td></tr></table></figure>
-
-<p>在~/.config/clash/config.yaml中设置UI地址(external-ui，指向clash-dashboard目录)和访问密码(secret)</p>
-<h2 id="添加系统服务"><a href="#添加系统服务" class="headerlink" title="添加系统服务"></a>添加系统服务</h2><p>将配置文件转移到/etc中</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv ~/.config/clash /etc</span><br></pre></td></tr></table></figure>
-
-<p>添加启动信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/systemd/system/clash.service</span><br></pre></td></tr></table></figure>
-
-<p>输入以下内容，-d参数指定配置文件路径</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=clash daemon</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=root</span><br><span class="line">ExecStart=/opt/clash/clash -d /etc/clash/</span><br><span class="line">Restart=on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
-
-<p>重新加载systemctl daemon</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动Clash</span></span><br><span class="line">sudo systemctl start clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置Clash开机自启动</span></span><br><span class="line">sudo systemctl enable clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启Clash命令</span></span><br><span class="line">sudo systemctl restart clash.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看Clash运行状态</span></span><br><span class="line">sudo systemctl status clash.service</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1154,20 +1145,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
