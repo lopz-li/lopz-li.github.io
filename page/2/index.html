@@ -167,6 +167,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/11/25/debian-resize-rootfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/25/debian-resize-rootfs/" class="post-title-link" itemprop="url">Debian根分区扩容</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-25 16:54:55" itemprop="dateCreated datePublished" datetime="2022-11-25T16:54:55+08:00">2022-11-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Debian/" itemprop="url" rel="index"><span itemprop="name">Debian</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>因为感觉Debian分区的容量有些不太够用，日前清空了一个不常用的Windows分区，将空闲空间合并到Debian的根分区，在此记录一下过程。</p>
+<p>调整根分区的风险很大，因此提前tar备份了重要的数据到仓库盘，也曾尝试用DiskGenius镜像的方式备份，失败了…</p>
+<p>首先清空Windows分区并删除分区得到空闲空间，空闲空间位于Debian根分区之前…</p>
+<p>因为DiskGenius镜像文件方式失败，所以放弃删除分区合并空间再镜像文件恢复的方式，试了Debian下的磁盘工具，因为需要先卸载分区才能调整，再次放弃…</p>
+<p>尝试直接用DiskGenius调整分区大小，检测Debian根分区时报告发现文件系统错误，到Debian下检测并未发现问题，放弃此方式…</p>
+<p>尝试先将空闲空间分区后，DiskGenius克隆现有Debian分区到新分区成功，发现此时新分区的卷UUID和原分区完全一样，重启后Debian还是挂载老分区为根目录。尝试在Grub启动系统时修改根文件系统指向，启动Debian成功，挂载新分区为根目录，简单尝试各项功能都正常。于是删除原Debian分区，再用DiskGenius调整新分区大小，合并全部空闲空间，重启用原Grub配置启动到新分区成功。</p>
+<p>逐个确认各软件及功能是否正常，大部分正常运行，发现kvm虚拟机无法启动，报找不到操作系统，尝试从备份文件恢复虚拟机硬盘镜像文件，再次启动成功。</p>
+<p>收获：事前备份很重要！！！  事后确认很重要！！！</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/11/24/win7-vs2017/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -976,126 +1061,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/02/26/build-rocketmq-client-cpp-for-tx2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Lopz">
-      <meta itemprop="description" content="想起来时的一些随笔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杂物放置处">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/26/build-rocketmq-client-cpp-for-tx2/" class="post-title-link" itemprop="url">在Nvidia Jetson TX2开发板上编译C++版本RocketMQ客户端库</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-26 17:02:42" itemprop="dateCreated datePublished" datetime="2022-02-26T17:02:42+08:00">2022-02-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rocketmq/" itemprop="url" rel="index"><span itemprop="name">rocketmq</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在Nvidia Jetson TX2开发板上编译C++版本RocketMQ客户端库需要注意一些小问题（针对2.2.0-prerelease版本）。</p>
-<p>在Nvidia Jetson TX2开发板的Ubuntu系统上编译RocketMQ客户端库时，由于体系结构是ARM64，因此需要对构建脚本等做一些修改才能通过编译。</p>
-<h2 id="基本环境"><a href="#基本环境" class="headerlink" title="基本环境"></a>基本环境</h2><p>在TX2上和普通Linux环境一样，需要安装cmake、automake、autoconf、libtool等编译工具，同时需要安装zlib-dev和bzip2-dev包（具体系统的包名称可能不同，可以通过apt-cache查一下）。</p>
-<h2 id="构建脚本"><a href="#构建脚本" class="headerlink" title="构建脚本"></a>构建脚本</h2><p>TX2属于ARM64架构，原构建系统部分参数并不适用，需要做一些修改</p>
-<ol>
-<li>CMakeLists.txt</li>
-</ol>
-<p>以下部分会增加-m64编译参数，TX2的编译器不支持这一选项，因此需要将其注释或删除</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (CMAKE_BUILD_BITS <span class="keyword">EQUAL</span> <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">list</span>(APPEND CXX_FLAGS <span class="string">&quot;-m32&quot;</span>)</span><br><span class="line"><span class="keyword">else</span> () <span class="comment">#not-condition</span></span><br><span class="line">    <span class="keyword">list</span>(APPEND CXX_FLAGS <span class="string">&quot;-m64&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span> ()</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>build.sh</li>
-</ol>
-<ul>
-<li>openssl版本</li>
-</ul>
-<p>构建脚本会自动下载1.1.1d版本openssl依赖库，但使用此版本库会导致链接rocketmq动态库时报无法重定位代码的错误，使用1.1.1i版本则没有此问题。</p>
-<p>将openssl的版本从1.1.1d</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">declare fname_openssl_down=&quot;openssl-1.1.1d.tar.gz&quot;</span><br></pre></td></tr></table></figure>
-
-<p>修改为1.1.1i即可</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">declare fname_openssl_down=&quot;openssl-1.1.1i.tar.gz&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>jsoncpp库文件路径</li>
-</ul>
-<p>TX2系统上jsoncpp编译完成后生成的库文件放置在aarch64-linux-gnu目录下，而构建脚本中此目录硬编码为x86_64-linux-gnu</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp $&#123;install_lib_dir&#125;/lib/x86_64-linux-gnu/libjsoncpp.a $&#123;install_lib_dir&#125;/lib/</span><br></pre></td></tr></table></figure>
-
-<p>需将目录名修改为随系统架构变化的形式</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp $&#123;install_lib_dir&#125;/lib/$(uname- m)-linux-gnu/libjsoncpp.a $&#123;install_lib_dir&#125;/lib/</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>boost编译参数</li>
-</ul>
-<p>构建脚本默认的boost库编译参数会导致最终生成的库不全，需要增加arm架构参数。将</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if [ $verbose -eq 0 ]; then</span><br><span class="line">   echo &quot;build boost without detail log.&quot;</span><br><span class="line">   ./b2 -j$cpu_num cflags=-fPIC cxxflags=-fPIC --with-atomic --with-thread --with-system --with-chrono --with-date_time --with-log --with-regex --with-serialization --with-filesystem --with-locale --with-iostreams threading=multi link=static release install --prefix=$&#123;install_lib_dir&#125; &amp;&gt; boostbuild.txt</span><br><span class="line"> else</span><br><span class="line">   ./b2 -j$cpu_num cflags=-fPIC cxxflags=-fPIC --with-atomic --with-thread --with-system --with-chrono --with-date_time --with-log --with-regex --with-serialization --with-filesystem --with-locale --with-iostreams threading=multi link=static release install --prefix=$&#123;install_lib_dir&#125;</span><br><span class="line"> fi</span><br></pre></td></tr></table></figure>
-
-<p>修改为</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if [ $verbose -eq 0 ]; then</span><br><span class="line">   echo &quot;build boost without detail log.&quot;</span><br><span class="line">   ./b2 -j$cpu_num cflags=-fPIC cxxflags=-fPIC --with-atomic --with-thread --with-system --with-chrono --with-date_time --with-log --with-regex --with-serialization --with-filesystem --with-locale --with-iostreams threading=multi link=static release install --prefix=$&#123;install_lib_dir&#125; architecture=arm &amp;&gt; boostbuild.txt</span><br><span class="line"> else</span><br><span class="line">   ./b2 -j$cpu_num cflags=-fPIC cxxflags=-fPIC --with-atomic --with-thread --with-system --with-chrono --with-date_time --with-log --with-regex --with-serialization --with-filesystem --with-locale --with-iostreams threading=multi link=static release install --prefix=$&#123;install_lib_dir&#125; architecture=arm</span><br><span class="line"> fi</span><br></pre></td></tr></table></figure>
-
-<h2 id="代理设置"><a href="#代理设置" class="headerlink" title="代理设置"></a>代理设置</h2><p>构建脚本在编译时会自动从国外网站下载一些依赖库，如果下载速度非常慢，可以利用代理进行加速</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=http://host:port</span><br><span class="line">export https_proxy=http://host:port</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1167,20 +1132,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
