@@ -167,6 +167,87 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/07/05/debian-install-isoimage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lopz">
+      <meta itemprop="description" content="想起来时的一些随笔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杂物放置处">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/05/debian-install-isoimage/" class="post-title-link" itemprop="url">从Ubuntu迁移到Debian：选择带无线网卡支持的netinst镜像</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-05 16:36:02" itemprop="dateCreated datePublished" datetime="2022-07-05T16:36:02+08:00">2022-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-24 15:38:52" itemprop="dateModified" datetime="2023-04-24T15:38:52+08:00">2023-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Debian/" itemprop="url" rel="index"><span itemprop="name">Debian</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在2022年当下，相当数量的笔记本都已经不提供有线网络接口了，如果想以netinst镜像方式安装Debian就只能通过无线网卡联网（有USB网卡的除外），而Debian的官方netinst镜像不带non-free的firmware，很多机器上启动之后因为无线网卡不能使用而无法继续安装过程，因此需要改用unofficial的附带non-free版本firmware的镜像以便使用无线网卡。</p>
+<p>unofficial的镜像在官方以及各镜像站都有提供下载，路径一般是类似debian-cdimage/unofficial/non-free/cd-including-firmware这种。例如我一般使用合肥中科大的镜像，就是<a target="_blank" rel="noopener" href="http://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/11.3.0+nonfree/amd64/iso-cd/firmware-11.3.0-amd64-netinst.iso">http://mirrors.ustc.edu.cn/debian-cdimage/unofficial/non-free/cd-including-firmware/11.3.0+nonfree/amd64/iso-cd/firmware-11.3.0-amd64-netinst.iso</a></p>
+<p>另外unofficial下可能在images-including-firmware这个路径下也能找到这个带firmware的镜像，通过checksum对比可以知道两个路径下的镜像文件是完全相同的，使用任意一个都行。</p>
+<p>从firmware版本镜像启动后，可以通过ip link命令查看无线网卡是否正常识别。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lopz-li.github.io/2022/02/26/build-rocketmq-client-cpp-for-tx2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1024,7 +1105,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1064,7 +1145,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
